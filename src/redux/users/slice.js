@@ -1,18 +1,19 @@
 import { createSlice } from '@reduxjs/toolkit';
+import { fetchContacts } from './operations';
 
 const contactsSlice = createSlice({
   // Ім'я слайсу
   name: 'phonebook',
   // Початковий стан редюсера слайсу
   initialState: {
-    contacts: [
-      { id: 'id-1', name: 'Rosie Simpson', number: '459-12-56' },
-      { id: 'id-2', name: 'Hermione Kline', number: '443-89-12' },
-      { id: 'id-3', name: 'Eden Clements', number: '645-17-79' },
-      { id: 'id-4', name: 'Annie Copeland', number: '227-91-26' },
-    ],
+    contacts: {
+      items: [],
+      isLoading: false,
+      error: null,
+    },
     filter: '',
   },
+
   // Об'єкт редюсерів
   reducers: {
     addContact(state, action) {
@@ -21,7 +22,7 @@ const contactsSlice = createSlice({
     deleteContact(state, action) {
       return {
         ...state,
-        contacts: state.contacts.filter(
+        items: state.contacts.items.filter(
           contact => contact.id !== action.payload
         ),
       };
@@ -29,11 +30,44 @@ const contactsSlice = createSlice({
     updateFilter(state, action) {
       return { ...state, filter: action.payload };
     },
+    // },
+    // extraReducers: {
+    fetchigInProgress(state) {
+      state.contacts.isLoading = true;
+    },
+    fetchingSuccess(state, action) {
+      state.contacts.isLoading = false;
+      state.contacts.error = null;
+      state.contacts.items = action.payload;
+    },
+    fetcingError(state, action) {
+      state.contacts.isLoading = false;
+      state.contacts.items = [];
+      state.contacts.error = action.payload;
+    },
+    // [fetchContacts.pending]: state => {
+    //   return { ...state, isLoading: true };
+    // },
+    // [fetchContacts.fulfilled]: (state, action) => {
+    //   return { ...state, items: action.payload };
+    // },
+    // [fetchContacts.rejected]: state => {
+    //   return { ...state, error: true };
+    // },
   },
 });
 
+// console.log(contactsSlice);
+
 // Генератори екшенів
-export const { addContact, deleteContact, updateFilter } =
-  contactsSlice.actions;
+export const {
+  addContact,
+  deleteContact,
+  updateFilter,
+  fetchigInProgress,
+  fetchingSuccess,
+  fetcingError,
+} = contactsSlice.actions;
 // Редюсер слайсу
+
 export const contactsReducer = contactsSlice.reducer;

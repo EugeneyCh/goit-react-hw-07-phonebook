@@ -1,11 +1,22 @@
 import { useSelector, useDispatch } from 'react-redux';
-import { getContacts, getFilter } from 'redux/users/selectors';
+// import { getContacts } from 'redux/users/selectors';
+import {
+  getContacts,
+  getFilter,
+  getIsLoading,
+  getError,
+} from 'redux/users/selectors';
 import { deleteContact } from 'redux/users/slice';
+import Loader from 'components/Loader/loader';
 import css from './Contact.module.css';
 
 function Contact() {
+  // const { contacts, filter, isLoading } = useSelector(getContacts);
+
   const contacts = useSelector(getContacts);
   const filter = useSelector(getFilter);
+  const isLoading = useSelector(getIsLoading);
+  const error = useSelector(getError);
   const dispatch = useDispatch();
 
   const handleDeleteContact = id => {
@@ -21,10 +32,15 @@ function Contact() {
   };
 
   const visibleContact = getVisibleContacts();
-
-  return visibleContact.map(({ id, name, number }) => (
+  if (isLoading) {
+    return <Loader />;
+  }
+  if (error) {
+    return 'Error' + error;
+  }
+  return visibleContact.map(({ id, name, phone }) => (
     <li key={id} className={css.contactRow}>
-      {name}:{number}
+      {name} : {phone}
       <button type="button" onClick={() => handleDeleteContact(id)}>
         Delete
       </button>

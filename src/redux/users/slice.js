@@ -16,7 +16,7 @@ const contactsSlice = createSlice({
   // Об'єкт редюсерів
   reducers: {
     addContact(state, action) {
-      return { ...state, contacts: [...state.contacts, action.payload] };
+      return { ...state, items: [...state.contacts.items, action.payload] };
     },
     deleteContact(state, action) {
       return {
